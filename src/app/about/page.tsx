@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { FiInstagram } from 'react-icons/fi';
 
 export default function AboutPage() {
