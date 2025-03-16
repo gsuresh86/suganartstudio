@@ -35,7 +35,7 @@ export default function ContactPage() {
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Contact Us</h1>
           <p className="text-xl md:text-2xl">
-            We'd love to hear from you. Get in touch with us for any inquiries.
+            We&apos;d love to hear from you. Get in touch with us for any inquiries.
           </p>
         </div>
       </section>
@@ -48,7 +48,7 @@ export default function ContactPage() {
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
               <p className="text-gray-700 text-lg mb-8">
-                Have questions about our artwork or interested in commissioning a custom piece? We're here to help. Reach out to us using the contact information below or fill out the form.
+                Have questions about our artwork or interested in commissioning a custom piece? We&apos;re here to help. Reach out to us using the contact information below or fill out the form.
               </p>
               
               <div className="space-y-6">
