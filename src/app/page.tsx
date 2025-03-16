@@ -28,7 +28,7 @@ export default function Home() {
     }, 5000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [placeholderImages.length]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -107,24 +107,29 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
             >
-              {/* This would be replaced with actual images */}
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-300">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse", repeatDelay: 4 }}
-                  className="text-center"
-                >
-                  <div className="w-64 h-64 md:w-96 md:h-96 rounded-full bg-gradient-to-r from-gray-400 to-gray-600 mx-auto flex items-center justify-center">
-                    <div className="w-48 h-48 md:w-72 md:h-72 rounded-full bg-gradient-to-r from-gray-200 to-gray-400 flex items-center justify-center">
-                      <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-r from-white to-gray-200 flex items-center justify-center text-gray-800 font-bold text-xl">
-                        Mandala Art
+              {/* Display the current image from the placeholderImages array */}
+              <div 
+                className="w-full h-full bg-cover bg-center"
+                style={{ backgroundImage: `url(${placeholderImages[currentImageIndex]})` }}
+              >
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-300 bg-opacity-70">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse", repeatDelay: 4 }}
+                    className="text-center"
+                  >
+                    <div className="w-64 h-64 md:w-96 md:h-96 rounded-full bg-gradient-to-r from-gray-400 to-gray-600 mx-auto flex items-center justify-center">
+                      <div className="w-48 h-48 md:w-72 md:h-72 rounded-full bg-gradient-to-r from-gray-200 to-gray-400 flex items-center justify-center">
+                        <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-r from-white to-gray-200 flex items-center justify-center text-gray-800 font-bold text-xl">
+                          Mandala Art
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <p className="mt-8 text-gray-700 text-xl font-semibold">Harmony Mandala</p>
-                  <p className="text-gray-500">A symbol of balance and inner peace</p>
-                </motion.div>
+                    <p className="mt-8 text-gray-700 text-xl font-semibold">Harmony Mandala</p>
+                    <p className="text-gray-500">A symbol of balance and inner peace</p>
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -148,7 +153,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-gray-700 text-lg mb-6">
-                Mandalas are sacred geometric designs that hold deep spiritual significance in various cultures. The word "mandala" comes from Sanskrit, meaning "circle" or "center." These intricate patterns represent the universe and are used as tools for meditation, mindfulness, and spiritual growth.
+                Mandalas are sacred geometric designs that hold deep spiritual significance in various cultures. The word &quot;mandala&quot; comes from Sanskrit, meaning &quot;circle&quot; or &quot;center.&quot; These intricate patterns represent the universe and are used as tools for meditation, mindfulness, and spiritual growth.
               </p>
               <p className="text-gray-700 text-lg mb-6">
                 Each mandala is a unique expression of creativity and intention. The process of creating a mandala is meditative in itself, requiring focus, patience, and a steady hand. The resulting artwork serves as a visual reminder of harmony, balance, and the interconnectedness of all things.
