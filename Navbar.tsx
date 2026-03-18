@@ -25,14 +25,7 @@ const Navbar = () => {
             className="h-auto" 
             priority
           />
-          <Image 
-            src="/logo.png" 
-            alt="Suganartstudio Logo" 
-            width={200} 
-            height={150} 
-            className="h-auto" 
-            priority
-          />
+          
         </Link>
 
         {/* Desktop Navigation */}

@@ -14,25 +14,20 @@ const Navbar = () => {
   };
 
   return (
-    <nav className=" shadow-md py-4 px-6 md:px-12 sticky top-0 z-50">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-md py-4 px-6 md:px-12">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-8">
+        <Link href="/" className="flex items-center gap-3">
           <Image 
             src="/logo_mandala.png" 
-            alt="Mandala Logo" 
-            width={60} 
-            height={60} 
-            className="h-auto" 
+            alt="Mandala" 
+            width={48} 
+            height={48} 
+            className="h-10 w-10 object-contain" 
             priority
           />
-          <Image 
-            src="/logo.png" 
-            alt="Suganartstudio Logo" 
-            width={200} 
-            height={150} 
-            className="h-auto" 
-            priority
-          />
+          <span className="text-xl font-semibold text-gray-800 tracking-tight">
+            Suganartstudio
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -48,6 +43,9 @@ const Navbar = () => {
           </Link>
           <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition duration-300 link-underline">
             Contact
+          </Link>
+          <Link href="/admin" className="text-gray-500 hover:text-gray-700 transition duration-300 text-sm">
+            Admin
           </Link>
         </div>
 
@@ -80,6 +78,9 @@ const Navbar = () => {
             </Link>
             <Link href="/contact" className="text-gray-700 hover:text-gray-900 transition duration-300">
               Contact
+            </Link>
+            <Link href="/admin" className="text-gray-700 hover:text-gray-900 transition duration-300">
+              Admin
             </Link>
           </div>
         </motion.div>

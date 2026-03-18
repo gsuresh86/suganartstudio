@@ -1,0 +1,9 @@
+{
+  "firestore": [
+    {
+      "database": "suganartstudio",
+      "rules": "firestore.rules",
+      "indexes": "firestore.indexes.json"
+    }
+  ]
+}

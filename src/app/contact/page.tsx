@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { FiMapPin, FiPhone, FiMail, FiInstagram } from 'react-icons/fi';
+import { viewportOnce, staggerContainer, staggerItem } from '../lib/animations';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,39 +15,52 @@ export default function ContactPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, you would send this data to your backend
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      const { submitContactForm } = await import('../lib/store');
+      await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject || undefined,
+        message: formData.message,
+      });
+      alert('Thank you for your message! We will get back to you soon.');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      setSubmitError('Something went wrong. Please try again or email us directly.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center bg-gradient-to-r from-purple-900 to-indigo-900 text-white">
+      <section className="relative h-[50vh] flex items-center justify-center bg-gradient-to-r from-purple-900 to-indigo-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('/mandala-bg.jpg')] bg-cover bg-center"></div>
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl md:text-2xl">
-            We&apos;d love to hear from you. Get in touch with us for any inquiries.
-          </p>
+          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="text-4xl md:text-6xl font-bold mb-6">Contact Us</motion.h1>
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} className="text-xl md:text-2xl">
+            We&apos;d love to hear from you. Get in touch for enquiries on Mandala, Lippon & Dot Mandala art.
+          </motion.p>
         </div>
       </section>
 
       {/* Contact Information and Form Section */}
       <section className="py-20 px-6 md:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-12" initial="initial" whileInView="animate" viewport={viewportOnce} variants={staggerContainer}>
             {/* Contact Information */}
-            <div>
+            <motion.div variants={staggerItem}>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
               <p className="text-gray-700 text-lg mb-8">
                 Have questions about our artwork or interested in commissioning a custom piece? We&apos;re here to help. Reach out to us using the contact information below or fill out the form.
@@ -96,11 +111,13 @@ export default function ContactPage() {
                   </div>
                 </div>
               </div>
-            </div>
-            
+            </motion.div>
             {/* Contact Form */}
-            <div className="bg-gray-50 p-8 rounded-lg shadow-lg">
+            <motion.div variants={staggerItem} className="bg-gray-50 p-8 rounded-lg shadow-lg">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+              {submitError && (
+                <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{submitError}</div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="mb-6">
                   <label htmlFor="name" className="block text-gray-700 font-medium mb-2">Your Name</label>
@@ -166,30 +183,30 @@ export default function ContactPage() {
                 <div>
                   <button
                     type="submit"
-                    className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-purple-700 transition duration-300"
+                    disabled={submitting}
+                    className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold text-lg hover:bg-purple-700 transition duration-300 disabled:opacity-50"
                   >
-                    Send Message
+                    {submitting ? 'Sending…' : 'Send Message'}
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Map Section */}
       <section className="py-12 px-6 md:px-12 bg-gray-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <motion.div className="text-center mb-12" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={viewportOnce} transition={{ duration: 0.5 }}>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Visit Our Gallery</h2>
             <p className="text-gray-700 text-lg max-w-3xl mx-auto">
-              We invite you to visit our gallery in person to experience the beauty of our artwork firsthand.
+              We invite you to visit our gallery in person to experience our Mandala, Lippon & Dot Mandala artwork.
             </p>
-          </div>
-          
-          <div className="bg-gray-200 h-[400px] rounded-lg flex items-center justify-center">
+          </motion.div>
+          <motion.div className="bg-gray-200 h-[400px] rounded-lg flex items-center justify-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={viewportOnce} transition={{ duration: 0.5 }}>
             <p className="text-gray-500 text-lg">Map will be displayed here</p>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

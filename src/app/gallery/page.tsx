@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { staggerContainer, staggerItem, viewportOnce } from '../lib/animations';
 
-// Sample artwork data
+// Art types: Mandala, Lippon, Dot Mandala
 const artworks = [
   {
     id: 1,
@@ -85,16 +86,44 @@ const artworks = [
     description: "A mandala inspired by the movement of celestial bodies. This piece captures the dance of stars and planets in a harmonious pattern.",
     dimensions: "22\" x 22\"",
     medium: "Mixed media on canvas"
+  },
+  {
+    id: 10,
+    title: "Sacred Dots",
+    type: "dot-mandala",
+    price: 15999,
+    description: "A dot mandala built with thousands of precise dots in concentric circles. Meditative and eye-catching.",
+    dimensions: "18\" x 18\"",
+    medium: "Acrylic dots on canvas"
+  },
+  {
+    id: 11,
+    title: "Ocean Dots",
+    type: "dot-mandala",
+    price: 18999,
+    description: "Dot mandala in shades of blue and teal, evoking the calm of the ocean.",
+    dimensions: "20\" x 20\"",
+    medium: "Acrylic dots on wooden board"
   }
 ];
 
 export default function GalleryPage() {
   const [filter, setFilter] = useState('all');
   const [selectedArtwork, setSelectedArtwork] = useState<number | null>(null);
+  const [enquiryProductId, setEnquiryProductId] = useState<number | null>(null);
+  const [enquiryForm, setEnquiryForm] = useState({ name: '', email: '', phone: '', message: '' });
 
-  const filteredArtworks = filter === 'all' 
-    ? artworks 
+  const filteredArtworks = filter === 'all'
+    ? artworks
     : artworks.filter(artwork => artwork.type === filter);
+
+  const handleEnquirySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Product enquiry:', { productId: enquiryProductId, ...enquiryForm });
+    alert('Thank you! We will get back to you soon with details.');
+    setEnquiryForm({ name: '', email: '', phone: '', message: '' });
+    setEnquiryProductId(null);
+  };
 
   const handleArtworkClick = (id: number) => {
     setSelectedArtwork(id);
@@ -109,51 +138,68 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 text-white">
+      <section className="relative h-[50vh] flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('/mandala-bg.jpg')] bg-cover bg-center"></div>
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Gallery</h1>
-          <p className="text-xl md:text-2xl">
-            Explore our collection of handcrafted mandala and lippon art pieces.
-          </p>
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-4xl md:text-6xl font-bold mb-6"
+          >
+            Our Gallery
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-xl md:text-2xl"
+          >
+            Mandala · Lippon · Dot Mandala — handcrafted art pieces.
+          </motion.p>
         </div>
       </section>
 
       {/* Gallery Section */}
       <section className="py-20 px-6 md:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+          <motion.div
+            className="flex flex-col md:flex-row justify-between items-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={viewportOnce}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-3xl font-bold text-gray-900 mb-6 md:mb-0">Artwork Collection</h2>
-            <div className="flex space-x-4">
-              <button 
-                onClick={() => setFilter('all')}
-                className={`px-6 py-2 rounded-full ${filter === 'all' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition duration-300`}
-              >
-                All
-              </button>
-              <button 
-                onClick={() => setFilter('mandala')}
-                className={`px-6 py-2 rounded-full ${filter === 'mandala' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition duration-300`}
-              >
-                Mandala
-              </button>
-              <button 
-                onClick={() => setFilter('lippon')}
-                className={`px-6 py-2 rounded-full ${filter === 'lippon' ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition duration-300`}
-              >
-                Lippon
-              </button>
+            <div className="flex flex-wrap justify-center gap-2">
+              {(['all', 'mandala', 'lippon', 'dot-mandala'] as const).map((f) => (
+                <motion.button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`px-5 py-2 rounded-full ${filter === f ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition duration-300`}
+                >
+                  {f === 'all' ? 'All' : f === 'dot-mandala' ? 'Dot Mandala' : f.charAt(0).toUpperCase() + f.slice(1)}
+                </motion.button>
+              ))}
             </div>
-          </div>
+          </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={viewportOnce}
+          >
             {filteredArtworks.map((artwork) => (
-              <motion.div 
+              <motion.div
                 key={artwork.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer transition-transform duration-300 hover:transform hover:scale-105"
+                variants={staggerItem}
+                className="bg-white rounded-lg overflow-hidden shadow-lg cursor-pointer"
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ duration: 0.3 }}
                 onClick={() => handleArtworkClick(artwork.id)}
               >
                 <div className="relative h-64 w-full">
@@ -163,7 +209,7 @@ export default function GalleryPage() {
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">{artwork.title}</h3>
-                  <p className="text-gray-600 font-medium mb-2 capitalize">{artwork.type} Art</p>
+                  <p className="text-gray-600 font-medium mb-2 capitalize">{artwork.type.replace('-', ' ')} Art</p>
                   <p className="text-gray-700 mb-4 line-clamp-2">{artwork.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700 font-semibold">₹{artwork.price}</span>
@@ -174,36 +220,49 @@ export default function GalleryPage() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Artwork Detail Modal */}
       {selectedArtwork && selectedArtworkData && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
+          onClick={closeModal}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          >
             <div className="p-6">
               <div className="flex justify-between items-start mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">{selectedArtworkData.title}</h2>
-                <button 
+                <button
                   onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none p-1"
+                  aria-label="Close"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="relative h-80 bg-gray-200 rounded-lg flex items-center justify-center">
                   <p className="text-gray-500">{selectedArtworkData.title}</p>
                 </div>
-                
+
                 <div>
-                  <p className="text-gray-600 font-medium mb-4 capitalize">{selectedArtworkData.type} Art</p>
+                  <p className="text-gray-600 font-medium mb-4 capitalize">{selectedArtworkData.type.replace('-', ' ')} Art</p>
                   <p className="text-gray-700 mb-6">{selectedArtworkData.description}</p>
-                  
+
                   <div className="space-y-4 mb-8">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Dimensions:</span>
@@ -218,20 +277,58 @@ export default function GalleryPage() {
                       <span className="text-gray-700 font-semibold">₹{selectedArtworkData.price}</span>
                     </div>
                   </div>
-                  
-                  <div className="flex space-x-4">
-                    <button className="flex-1 bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition duration-300">
+
+                  <div className="flex flex-wrap gap-3">
+                    <button className="flex-1 min-w-[120px] bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition duration-300">
                       Add to Cart
                     </button>
-                    <button className="flex-1 border border-gray-700 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
-                      Inquire
+                    <button
+                      onClick={() => setEnquiryProductId(selectedArtwork)}
+                      className="flex-1 min-w-[120px] border border-gray-700 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300"
+                    >
+                      Product Enquiry
                     </button>
                   </div>
+
+                  {/* Inline Product Enquiry Form */}
+                  {enquiryProductId === selectedArtwork && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-6 pt-6 border-t border-gray-200"
+                    >
+                      <h4 className="text-lg font-semibold text-gray-900 mb-4">Send Enquiry for {selectedArtworkData.title}</h4>
+                      <form onSubmit={handleEnquirySubmit} className="space-y-4">
+                        <div>
+                          <label htmlFor="enq-name" className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                          <input id="enq-name" type="text" required value={enquiryForm.name} onChange={(e) => setEnquiryForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500" placeholder="Your name" />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="enq-email" className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                            <input id="enq-email" type="email" required value={enquiryForm.email} onChange={(e) => setEnquiryForm(f => ({ ...f, email: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500" placeholder="your@email.com" />
+                          </div>
+                          <div>
+                            <label htmlFor="enq-phone" className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input id="enq-phone" type="tel" value={enquiryForm.phone} onChange={(e) => setEnquiryForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500" placeholder="+91" />
+                          </div>
+                        </div>
+                        <div>
+                          <label htmlFor="enq-msg" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                          <textarea id="enq-msg" rows={3} value={enquiryForm.message} onChange={(e) => setEnquiryForm(f => ({ ...f, message: e.target.value }))} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500" placeholder="Questions about size, customisation, delivery..." />
+                        </div>
+                        <div className="flex gap-2">
+                          <button type="submit" className="bg-gray-800 text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-700">Submit Enquiry</button>
+                          <button type="button" onClick={() => { setEnquiryProductId(null); setEnquiryForm({ name: '', email: '', phone: '', message: '' }); }} className="border border-gray-300 px-4 py-2 rounded-lg font-medium hover:bg-gray-50">Cancel</button>
+                        </div>
+                      </form>
+                    </motion.div>
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
 
       {/* Commission Section */}
