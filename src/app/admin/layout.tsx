@@ -97,7 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
         </div>
       </aside>
-      <main className="flex-1 p-6 overflow-auto">{children}</main>
+      <main className="flex-1 p-6 overflow-auto text-gray-900">{children}</main>
     </div>
   );
 }

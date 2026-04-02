@@ -8,11 +8,13 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  deleteField,
   type DocumentData,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirebaseDb, getFirebaseStorage } from "./firebase";
 import type { Product, Order, Quotation, Invoice } from "./types";
+import { invoiceLineAmount, normalizeDiscountPercent } from "./invoice-line";
 
 const COLLECTIONS = {
   products: "products",
@@ -63,13 +65,37 @@ function toQuotation(d: DocumentData, id: string): Quotation {
 }
 
 function toInvoice(d: DocumentData, id: string): Invoice {
+  const rawItems = Array.isArray(d.items) ? d.items : [];
+  const items: Invoice["items"] = rawItems.map((it: DocumentData) => {
+    const quantity = Number(it.quantity) || 0;
+    const unitPrice = Number(it.unitPrice) || 0;
+    const subtotal = quantity * unitPrice;
+    const legacyRupees = Number(it.discount) || 0;
+    const hasExplicitPercent = Object.prototype.hasOwnProperty.call(it, "discountPercent");
+    const discountPercent = hasExplicitPercent
+      ? normalizeDiscountPercent(it.discountPercent)
+      : legacyRupees > 0 && subtotal > 0
+        ? normalizeDiscountPercent((legacyRupees / subtotal) * 100)
+        : 0;
+    const stored = Number(it.amount);
+    const amount = Number.isFinite(stored)
+      ? stored
+      : invoiceLineAmount(quantity, unitPrice, discountPercent);
+    return {
+      description: String(it.description ?? ""),
+      quantity,
+      unitPrice,
+      discountPercent,
+      amount,
+    };
+  });
   return {
     id,
     orderId: d.orderId,
     customerName: d.customerName ?? "",
     email: d.email ?? "",
     address: d.address,
-    items: Array.isArray(d.items) ? d.items : [],
+    items,
     total: Number(d.total) ?? 0,
     status: d.status ?? "draft",
     createdAt: d.createdAt?.toDate?.()?.toISOString() ?? d.createdAt ?? new Date().toISOString(),
@@ -214,6 +240,39 @@ export async function updateInvoiceStatus(
 ): Promise<Invoice | null> {
   const db = getFirebaseDb();
   await updateDoc(doc(db, COLLECTIONS.invoices, id), { status });
+  const list = await getAllInvoices();
+  return list.find((x) => x.id === id) ?? null;
+}
+
+export async function updateInvoice(
+  id: string,
+  inv: Pick<Invoice, "customerName" | "email" | "address" | "items" | "total" | "status">
+): Promise<Invoice | null> {
+  const db = getFirebaseDb();
+  const items = inv.items.map((i) => {
+    const discountPercent = normalizeDiscountPercent(i.discountPercent);
+    return {
+      description: i.description,
+      quantity: i.quantity,
+      unitPrice: i.unitPrice,
+      discountPercent,
+      amount: invoiceLineAmount(i.quantity, i.unitPrice, discountPercent),
+    };
+  });
+  const total = items.reduce((s, i) => s + i.amount, 0);
+  const payload: Record<string, unknown> = {
+    customerName: inv.customerName,
+    email: inv.email,
+    items,
+    total,
+    status: inv.status,
+  };
+  if (inv.address?.trim()) {
+    payload.address = inv.address.trim();
+  } else {
+    payload.address = deleteField();
+  }
+  await updateDoc(doc(db, COLLECTIONS.invoices, id), payload as DocumentData);
   const list = await getAllInvoices();
   return list.find((x) => x.id === id) ?? null;
 }

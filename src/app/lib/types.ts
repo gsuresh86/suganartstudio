@@ -40,7 +40,14 @@ export interface Invoice {
   customerName: string;
   email: string;
   address?: string;
-  items: { description: string; quantity: number; unitPrice: number; amount: number }[];
+  items: {
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    /** Percent off this line subtotal (qty × unit price), 0–100. */
+    discountPercent: number;
+    amount: number;
+  }[];
   total: number;
   status: "draft" | "sent" | "paid";
   createdAt: string;

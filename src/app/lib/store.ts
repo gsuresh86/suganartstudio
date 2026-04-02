@@ -11,6 +11,7 @@ export {
   addQuotation,
   getAllInvoices,
   addInvoice,
+  updateInvoice,
   updateInvoiceStatus,
   submitContactForm,
   uploadProductImage,

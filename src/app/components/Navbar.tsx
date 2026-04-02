@@ -17,16 +17,16 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-md py-4 px-6 md:px-12">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center gap-3">
-          <Image 
-            src="/logo_mandala.png" 
-            alt="Mandala" 
-            width={48} 
-            height={48} 
-            className="h-10 w-10 object-contain" 
+          <Image
+            src="/logo.png"
+            alt="SUGAN ART STUDIO logo"
+            width={48}
+            height={48}
+            className="h-10 w-10 object-contain"
             priority
           />
           <span className="text-xl font-semibold text-gray-800 tracking-tight">
-            Suganartstudio
+            Sugan Art Studio
           </span>
         </Link>
 

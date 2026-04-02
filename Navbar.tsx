@@ -17,12 +17,12 @@ const Navbar = () => {
     <nav className=" shadow-md py-4 px-6 md:px-12 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/" className="flex items-center gap-8">
-          <Image 
-            src="/logo_mandala.png" 
-            alt="Mandala Logo" 
-            width={60} 
-            height={60} 
-            className="h-auto" 
+          <Image
+            src="/logo.png"
+            alt="SUGAN ART STUDIO logo"
+            width={60}
+            height={60}
+            className="h-auto"
             priority
           />
           

@@ -53,7 +53,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4 text-white">Contact Us</h3>
             <p className="text-gray-300 mb-2">704, Crystal Block, PBEL City, Hyderabad</p>
-            <p className="text-gray-300 mb-2">Phone: +91 9000236824</p>
+            <p className="text-gray-300 mb-2">Phone: +91 9032608401</p>
             <p className="text-gray-300 flex items-center">
               <FiMail className="mr-2" /> hsuganya@gmail.com
             </p>
